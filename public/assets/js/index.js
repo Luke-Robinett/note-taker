@@ -75,19 +75,22 @@ var handleNoteDelete = function(event) {
     activeNote = {};
   }
 
-  deleteNote(note.id).then(function() {
-    getAndRenderNotes();
-    renderActiveNote();
-  });
+  if (confirm("Delete selected note?")) {
+    deleteNote(note.id).then(function() {
+      getAndRenderNotes();
+      renderActiveNote();
+    });
+  }
 };
 
 // Sets the activeNote and displays it
 var handleNoteView = function() {
   activeNote = $(this).data();
+  alert("Selected the note");
   renderActiveNote();
 };
 
-// Sets the activeNote to and empty object and allows the user to enter a new note
+// Sets the activeNote to an empty object and allows the user to enter a new note
 var handleNewNoteView = function() {
   activeNote = {};
   renderActiveNote();
@@ -114,11 +117,10 @@ var renderNoteList = function(notes) {
 
     var $li = $("<li class='list-group-item'>").data(note);
     var $span = $("<span>").text(note.title);
-    var $delBtn = $(
-      "<i class='fas fa-trash-alt float-right text-danger delete-note'>"
-    );
+    var $selectBtn = $("<button class='sr-only'>").text(`Select ${note.title}`);
+    var $delBtn = $("<button class='fas fa-trash-alt float-right text-danger delete-note'>").append("<span class='sr-only'>").text(`Delete ${note.title}`);
 
-    $li.append($span, $delBtn);
+    $li.append($span, $selectBtn, $delBtn);
     noteListItems.push($li);
   }
 

@@ -5,6 +5,7 @@ const fs = require("fs");
 const app = express();
 const PORT = 80;
 
+app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 
 // Web app routes
@@ -18,11 +19,12 @@ app.get("/notes", function(req, res) {
 });
 
 // API routes
+
 app.get("/api/notes", function(req, res) {
- const testJSON = {
+ const testJSON = [{
    "title": "To Do",
-   "text": "I've got way too much to do!"
-  };
+   "text": "Way too much to do!"
+  }];
 
   res.json(testJSON);
 });
