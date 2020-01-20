@@ -11,7 +11,7 @@ var activeNote = {};
 var getNotes = function() {
   return $.ajax({
     url: "/api/notes",
-    method: "GET"
+    method: "GET",
   });
 };
 
@@ -86,7 +86,6 @@ var handleNoteDelete = function(event) {
 // Sets the activeNote and displays it
 var handleNoteView = function() {
   activeNote = $(this).data();
-  alert("Selected the note");
   renderActiveNote();
 };
 
@@ -106,8 +105,9 @@ var handleRenderSaveBtn = function() {
   }
 };
 
-// Render's the list of note titles
+// Renders the list of note titles
 var renderNoteList = function(notes) {
+  console.log(notes);
   $noteList.empty();
 
   var noteListItems = [];
