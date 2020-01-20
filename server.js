@@ -30,7 +30,7 @@ app.get("/api/notes", function (req, res) {
 
     const notes = JSON.parse(data);
     console.log(notes);
-    res.json(data);
+    res.json(notes);
   });
 });
 
