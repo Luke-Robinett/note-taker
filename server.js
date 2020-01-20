@@ -2,54 +2,60 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 
+// Configure express
 const app = express();
 const PORT = 80;
-
 app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Web app routes
 
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "/public/index.html"));
-});
-
-app.get("/notes", function (req, res) {
-  res.sendFile(path.join(__dirname, "/public/notes.html"));
-});
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "/public/index.html")));
+app.get("/notes", (req, res) => res.sendFile(path.join(__dirname, "/public/notes.html")));
 
 // API routes
 
-app.get("/api/notes", function (req, res) {
-  fs.readFile(path.join(__dirname + "/db/db.json"), function (err, data) {
+app.get("/api/notes", (req, res) => {
+  fs.readFile(path.join(__dirname, "/db/db.json"), (err, data) => {
     if (err) {
-      console.log(err);
-      return;
+      res.json({});
+    } else {
+      try {
+        res.json(JSON.parse(data));
+      } catch {
+        res.json({});
+      }
     }
-
-    const notes = JSON.parse(data);
-    console.log(notes);
-    res.json(notes);
   });
 });
 
 app.post("/api/notes", function (req, res) {
-  fs.readFile(path.join(__dirname + "/db/db.json"), function (err, data) {
-    let notes = [];
-    if (data != null) {
+  fs.readFile(path.join(__dirname, "/db/db.json"), (err, data) => {
+    var notes;
+
+    // Load any saved notes first
+    try {
       notes = JSON.parse(data);
+    } catch {
+      // If no notes in file or file doesn't exist, start with empty array
+      notes = [];
     }
+
+    // Append new note to array
     notes.push(req.body);
 
-    fs.writeFile(path.join(__dirname + "/db/db.json"), JSON.stringify(notes), function (err) {
+    // Save array of notes to file
+    fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(notes), err => {
       if (err) {
-        console.log(err);
+        throw err;
         return;
       }
-
       console.log("File saved.");
-    });
+
+      // Respond with the newly added note
+      res.json(req.body);
+    })
   });
 });
 
