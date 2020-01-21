@@ -71,7 +71,7 @@ app.post("/api/notes", (req, res) => {
   });
 });
 
-app.delete("/api/notes/*", (req, res) => {
+app.delete("/api/notes/:id", (req, res) => {
   console.log("API received a DELETE request.");
 
   fs.readFile(path.join(__dirname, "/db/db.json"), (err, data) => {
@@ -83,7 +83,7 @@ app.delete("/api/notes/*", (req, res) => {
     let deletedNote = {};
     try {
       const notes = JSON.parse(data);
-      const id = parseInt(req.params[0]);
+      const id = parseInt(req.params.id);
       let foundIndex = -1;
 
       notes.some((note, index) => {
