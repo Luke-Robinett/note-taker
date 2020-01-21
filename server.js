@@ -31,30 +31,38 @@ app.get("/api/notes", (req, res) => {
 });
 
 app.post("/api/notes", function (req, res) {
+  console.log("Received POST request");
   fs.readFile(path.join(__dirname, "/db/db.json"), (err, data) => {
-    var notes;
+    let notes = [];
+    let newId = 1;
 
     // Load any saved notes first
     try {
-      notes = JSON.parse(data);
-    } catch {
+      notes= JSON.parse(data);
+      newId = parseInt(notes[notes.length - 1].id) + 1;
+      console.log(`Got ${notes.length} notes from database.`);
+    } catch(err) {
       // If no notes in file or file doesn't exist, start with empty array
       notes = [];
+      console.log(err.message);
+      console.log("Couldn't get data from database so starting with empty file.");
     }
 
     // Append new note to array
-    notes.push(req.body);
+    const newNote = req.body;
+    newNote.id = newId;
+    notes.push(newNote);
+    console.log(`Added new note:\n${newNote}`);
 
     // Save array of notes to file
     fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(notes), err => {
       if (err) {
         throw err;
-        return;
       }
-      console.log("File saved.");
+      console.log(`Successfully saved ${notes.length} notes to the database.`);
 
       // Respond with the newly added note
-      res.json(req.body);
+      res.json(newNote);
     })
   });
 });

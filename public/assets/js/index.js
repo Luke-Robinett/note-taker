@@ -35,6 +35,7 @@ var deleteNote = function(id) {
 // If there is an activeNote, display it, otherwise render empty inputs
 var renderActiveNote = function() {
   $saveNoteBtn.hide();
+  console.log(activeNote);
 
   if (activeNote.id) {
     $noteTitle.attr("readonly", true);
@@ -107,7 +108,6 @@ var handleRenderSaveBtn = function() {
 
 // Renders the list of note titles
 var renderNoteList = function(notes) {
-  console.log(notes);
   $noteList.empty();
 
   var noteListItems = [];
