@@ -35,7 +35,7 @@ app.get("/api/notes", (req, res) => {
   });
 });
 
-app.post("/api/notes", function (req, res) {
+app.post("/api/notes", (req, res) => {
   console.log("API received a POST request");
   fs.readFile(path.join(__dirname, "/db/db.json"), (err, data) => {
     let notes = [];
@@ -43,7 +43,7 @@ app.post("/api/notes", function (req, res) {
 
     // Load any saved notes first
     try {
-      notes= JSON.parse(data);
+      notes = JSON.parse(data);
 
       // Auto increment new note by one based on value of last saved note
       newId = parseInt(notes[notes.length - 1].id) + 1;
@@ -71,6 +71,45 @@ app.post("/api/notes", function (req, res) {
   });
 });
 
-app.listen(PORT, function () {
-  console.log("App listening on PORT " + PORT);
+app.delete("/api/notes/*", (req, res) => {
+  console.log("API received a DELETE request.");
+
+  fs.readFile(path.join(__dirname, "/db/db.json"), (err, data) => {
+    if (err) {
+      console.log("Nothing deleted because no database file found.");
+      return;
+    }
+
+    let deletedNote = {};
+    try {
+      const notes = JSON.parse(data);
+      const id = parseInt(req.params[0]);
+      let foundIndex = -1;
+
+      notes.some((note, index) => {
+        if (note.id === id) {
+          foundIndex = index;
+          deletedNote = note;
+          return true;
+        }
+      });
+      if (foundIndex >= 0) {
+        notes.splice(foundIndex, 1);
+        fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(notes), (err) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          console.log("Note deleted and database file updated.");
+        });
+      }
+    } catch {
+      console.log("Nothing deleted because couldn't find any valid note data in the database.");
+    }
+
+    res.json(deletedNote);
+  });
 });
+
+// Start the server
+app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
