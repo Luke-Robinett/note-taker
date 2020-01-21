@@ -17,7 +17,7 @@ app.get("/notes", (req, res) => res.sendFile(path.join(__dirname, "/public/notes
 // API routes
 
 app.get("/api/notes", (req, res) => {
-  console.log("Got new GET request.");
+  console.log("API received a GET request.");
   fs.readFile(path.join(__dirname, "/db/db.json"), (err, data) => {
     if (err) {
       console.log("Database file doesn't exist. It will be automatically created when the first note is entered and saved.");
@@ -25,7 +25,7 @@ app.get("/api/notes", (req, res) => {
     } else {
       try {
         const notes = JSON.parse(data);
-        console.log(`Responding with ${notes.length} notes from the database.`);
+        console.log(`Responding with ${notes.length} note(s) from the database.`);
         res.json(notes);
       } catch {
         console.log("Database file doesn't contain any valid note data.");
@@ -36,7 +36,7 @@ app.get("/api/notes", (req, res) => {
 });
 
 app.post("/api/notes", function (req, res) {
-  console.log("Received POST request");
+  console.log("API received a POST request");
   fs.readFile(path.join(__dirname, "/db/db.json"), (err, data) => {
     let notes = [];
     let newId = 1;
