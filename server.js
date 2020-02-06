@@ -27,8 +27,8 @@ app.get("/api/notes", (req, res) => {
         const notes = JSON.parse(data);
         console.log(`Responding with ${notes.length} note(s) from the database.`);
         res.json(notes);
-      } catch {
-        console.log("Database file doesn't contain any valid note data.");
+      } catch(err) {
+        console.error(err);
         res.json({});
       }
     }
@@ -48,8 +48,8 @@ app.post("/api/notes", (req, res) => {
       // Auto increment new note by one based on value of last saved note
       newId = parseInt(notes[notes.length - 1].id) + 1;
       console.log(`Got ${notes.length} note(s) from database.`);
-    } catch {
-      console.log("Couldn't get data from database so starting with empty file.");
+    } catch(err) {
+      console.error(err);
     }
 
     // Append new note to array
@@ -103,8 +103,8 @@ app.delete("/api/notes/:id", (req, res) => {
           console.log("Note deleted and database file updated.");
         });
       }
-    } catch {
-      console.log("Nothing deleted because couldn't find any valid note data in the database.");
+    } catch(err) {
+      console.error(err);
     }
 
     res.json(deletedNote);
